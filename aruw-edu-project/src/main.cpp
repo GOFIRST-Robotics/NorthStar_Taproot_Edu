@@ -44,6 +44,10 @@
 #include "tap/architecture/clock.hpp"
 
 /* define timers here -------------------------------------------------------*/
+static constexpr float IMU_SMAPLE_FREQUENCY = 500;
+static constexpr float MAHONY_KP = 0.5f;
+static constexpr float MAHONY_KI = 0;
+
 tap::arch::PeriodicMilliTimer sendMotorTimeout(2);
 
 // Place any sort of input/output initialization here. For example, place
@@ -103,7 +107,7 @@ static void initializeIo(src::Drivers *drivers)
     drivers->can.initialize();
     drivers->errorController.init();
     drivers->remote.initialize();
-    drivers->mpu6500.init();
+    drivers->mpu6500.init(IMU_SMAPLE_FREQUENCY, MAHONY_KP, MAHONY_KI);
     drivers->refSerial.initialize();
     drivers->terminalSerial.initialize();
     drivers->schedulerTerminalHandler.init();

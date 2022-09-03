@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Advanced Robotics at the University of Washington <robomstr@uw.edu>
+ * Copyright (c) 2022 Advanced Robotics at the University of Washington <robomstr@uw.edu>
  *
  * This file is part of aruw-edu.
  *
@@ -17,8 +17,6 @@
  * along with aruw-edu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <gtest/gtest.h>
-
-#include "my_first_file.hpp"
-
-TEST(hello, world) { EXPECT_EQ(3, sum(1, 2)); }
+namespace control::agitator
+{
+}  // namespace control::agitator
