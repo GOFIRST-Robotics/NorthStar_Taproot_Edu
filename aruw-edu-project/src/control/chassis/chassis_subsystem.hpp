@@ -25,6 +25,7 @@
 #include "tap/util_macros.hpp"
 
 #include "modm/math/filter/pid.hpp"
+#include "modm/math/geometry/angle.hpp"
 
 #if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
 #include "tap/mock/dji_motor_mock.hpp"
@@ -32,14 +33,18 @@
 #include "tap/motor/dji_motor.hpp"
 #endif
 
+class Drivers;
+
 namespace control::chassis
 {
 struct ChassisConfig
 {
     tap::motor::MotorId leftFrontId;
     tap::motor::MotorId leftBackId;
-    tap::motor::MotorId rightFrontId;
     tap::motor::MotorId rightBackId;
+    tap::motor::MotorId rightFrontId;
+    tap::can::CanBus canBus;
+    modm::Pid<float>::Parameter wheelVelocityPidConfig;
 };
 
 ///
@@ -48,9 +53,11 @@ struct ChassisConfig
 class ChassisSubsystem : public tap::control::Subsystem
 {
 public:
+    using Pid = modm::Pid<float>;
+
     static constexpr float MAX_WHEELSPEED_RPM = 7000;
 
-    ChassisSubsystem(const ChassisConfig& config);
+    ChassisSubsystem(Drivers& drivers, const ChassisConfig& config);
 
     ///
     /// @brief Initializes the drive motors.
@@ -78,18 +85,18 @@ private:
     /// @brief Motor ID to index into the velocityPid and motors object.
     enum class MotorId : uint8_t
     {
-        LF = 0,///< Left front
-        LB,///< Left back
-        RF,///< Right front
-        RB,///< Right back
+        LF = 0,  ///< Left front
+        LB,      ///< Left back
+        RF,      ///< Right front
+        RB,      ///< Right back
         NUM_MOTORS,
     };
 
-    /// Desired wheel output for each motor 
+    /// Desired wheel output for each motor
     std::array<float, static_cast<uint8_t>(MotorId::NUM_MOTORS)> desiredOutput;
 
     /// PID controllers. Input desired wheel velocity, output desired motor current.
-    std::array<modm::Pid<float>, static_cast<uint8_t>(MotorId::NUM_MOTORS)> pidControllers;
+    std::array<Pid, static_cast<uint8_t>(MotorId::NUM_MOTORS)> pidControllers;
 
 #if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
 public:
@@ -97,7 +104,7 @@ public:
     std::array<tap::mock::DjiMotorMock, static_cast<uint8_t>(MotorId::NUM_MOTORS)> motors;
 #else
     /// Motors.
-    tap::motor::DjiMotor motors[static_cast<uint8_t>(MotorId::NUM_MOTORS)];
+    std::array<tap::motor::DjiMotor, static_cast<uint8_t>(MotorId::NUM_MOTORS)> motors;
 #endif
 };  // class ChassisSubsystem
 }  // namespace control::chassis

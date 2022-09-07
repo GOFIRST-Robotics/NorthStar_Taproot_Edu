@@ -21,7 +21,8 @@
 
 #include "tap/control/command.hpp"
 
-namespace control {
+namespace control
+{
 class ControlOperatorInterface;
 }
 
@@ -37,20 +38,24 @@ class ChassisSubsystem;
 class ChassisTankDriveCommand : public tap::control::Command
 {
 public:
-    static constexpr float MAX_CHASSIS_SPEED_MPS  =3.0f;
+    static constexpr float MAX_CHASSIS_SPEED_MPS = 3.0f;
 
     /**
      * @brief Construct a new Chassis Tank Drive Command object
-     * 
+     *
      * @param chassis Chassis to control.
      */
     ChassisTankDriveCommand(ChassisSubsystem &chassis, ControlOperatorInterface &operatorInterface);
+
+    const char *getName() const override { return "Chassis tank drive"; }
 
     void initialize() override {}
 
     void execute() override;
 
     void end(bool interrupted) override;
+
+    bool isFinished() const { return false; }
 
 private:
     ChassisSubsystem &chassis;

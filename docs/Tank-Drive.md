@@ -1,20 +1,20 @@
 ## Hardware
 
-The chassis is a fundamental subsystem for all RoboMaster robots. Our 2022
+The chassis is a fundamental subsystem for many RoboMaster robots. Our 2022
 standard chassis consists of the following hardware:
 
-* Main microcontroller. The
+- Main microcontroller. The
   [microcontroller](https://en.wikipedia.org/wiki/Microcontroller) used on the
   standard is the [RoboMaster type A Board](). The microcontroller has
   peripherals to interact with all other hardware subsystems including the
   chassis subsystem. 
-* Four motor controllers ([RoboMaster C620 motor controllers]()). The motor
+- Four motor controllers ([RoboMaster C620 motor controllers]()). The motor
   controllers are wired to the microcontroller so the main microcontroller can
-  send commands to the microcontroller using a protol called [CAN])().
+  send commands to the motor controllers using a protocol called [CAN]().
   Furthermore, the motor controllers send motor information to the main
-  microcontroller. This information includes information about the velocity of
-  the motor and the rotational position.
-* Four motors ([RoboMaster M3508 motors]()). Each motor is connected to the
+  microcontroller using the same protocol. This includes information about the
+  measured velocity of the motor and the motor shaft's rotational position.
+- Four motors ([RoboMaster M3508 motors]()). Each motor is connected to the
   motor controller. The motor takes commands from the motor controller and sends
   information back to the motor controller. Each motor is connected to a
   [mecanum wheel]().
@@ -22,10 +22,16 @@ standard chassis consists of the following hardware:
 ## Tank Drive
 
 Your goal is to write a program that will allow you to control a robot with
-**"tank drive,** a simple but common drive system. “Tank drive” is when you have
-a robot you move with 2 joysticks, where the y-axis (vertical) of each joystick
+**"tank drive",** a simple but common drive system. “Tank drive” is when you
+control a robot with 2 joysticks, where the y-axis (vertical) of each joystick
 controls the left and right side of the robot’s drive motors respectively. This
 is how big military tanks work (hence the name).
+
+For instance:
+- Push both joysticks forward and the robot will move forward.
+- Push both joysticks backward and the robot will move backward.
+- Push left joystick forward and right joystick backward and robot will spin
+  clockwise.
 
 ## Code Architecture
 
@@ -75,34 +81,43 @@ unfamiliar with using Git.
 
 ## Notes Before Beginning
 
+- This tutorial is not a comprehensive of C++ or the codebase. It is designed to
+  guide your learning in a structured manner. As you go through this tutorial,
+  it is expected that you work with others, ask leads questions about parts, and
+  most importantly, search the internet for various questions that are not
+  specific to the project.
+
 - As you start working through this tutorial, **build your code often**. This
   will help tremendously because it allows you to easily identify where errors
   are coming from. Unlike some IDEs, VSCode Intellisense is not always accurate
   and will sometimes not identify errors (especially more complex, annoying
   ones). So, please, please build often. To build, refer to the section in the
-  README called "Building code and programming the RoboMaster Development
-  Board."
+  aruw-edu README called "Building code and programming the RoboMaster
+  Development Board."
 
 - The library that you will be using to develop your chassis tank drive software
   is called
   [taproot](https://gitlab.com/aruw/controls/taproot/-/wikis/definitions#taproot).
   Please look over the section called ["Code Generated in User
   Projects"](https://gitlab.com/aruw/controls/taproot/-/wikis/Code-Generation-in-User-Projects)
-  in the taproot wiki. In aruw-edu, taproot is included as a submodule at the
-  top level of the repository. Generated taproot software that you will be
+  in the taproot wiki. In aruw-edu, taproot is included as a git submodule at
+  the top level of the repository. Generated taproot software that you will be
   interacting with is located in `./aruw-edu/aruw-edu-project/taproot`.
 
-- If you are stuck on some part of the curriculum, please reach out for help.
+- If you are stuck on some part of this tutorial, please reach out for help.
   Solutions are available; however, these should not be referenced unless
-  absolutely necessary. Doing so defeats the purpose of the curriculum.
+  absolutely necessary. Doing so defeats the purpose of this tutorial.
+
+- Various C++ tips that are not specific to our codebase will be italicized.
 
 ## Overview
 
-During this project, you will be developing software in `./aruw-edu/src`. This
-wiki will guide you through finishing a variety of incomplete subsystems and
-commands. Next is a description of each section you will be developing.
+During this project, you will be developing software in
+`./aruw-edu/aruw-edu-project/src`. This wiki will guide you through finishing a
+variety of incomplete subsystems and commands. Next is a description of each
+section you will be developing.
 
-- **`ControlOperatorInterface`**: Access inputs provided by a user from the
+- **`ControlOperatorInterface`**: Accesses inputs provided by a user from the
   [remote](https://gitlab.com/aruw/controls/taproot/-/wikis/definitions#remote).
   Provides an abstraction layer between remote input and user control used in
   commands. For example, translates "move the left stick up and right stick
@@ -114,28 +129,43 @@ commands. Next is a description of each section you will be developing.
 - **`ChassisDriveCommand`**: Translates user input ("I want to turn left") into
   instructions that the `ChassisSubsystem` can understand.
 
-- **`Soldier`**: Where instances of the `ChassisSubsystem`,
-  `ChassisDriveCommand`, and other control-related object instances are
-  instantiated.
+- **`Robot`**: Where instances of the `ChassisSubsystem`, `ChassisDriveCommand`,
+  and other control-related object instances are instantiated.
 
 ## `ControlOperatorInterface`
 
-Next you will be adding a couple of functions to the `ControlOperatorInterface`
+First you will be adding a couple of functions to the `ControlOperatorInterface`
 object in `control_operator_interface.hpp` and `control_operator_interface.cpp`.
 In these files, you will find sections labeled `// STEP <n>`. Hints
 corresponding to these sections are listed below to help you along.
+
+_**C++ Tip**: In C++, we break apart separate logical units into classes similar
+to Java. In the normal case, each C++ class will have an associated **header**
+file (suffixed commonly by .hpp) and **source** file (suffixed commonly by
+.cpp). Typical naming convention associates class and file names together. For
+instance, a class named `ContiguousFloat` will be housed in corresponding source
+and header files named `contiguous_float.cpp` and `contiguous_float.hpp`
+respectively._
 
 You will be adding the `getChassisTankLeftInput` and `getChassisTankRightInput`
 functions to the operator interface.
 
 ### Step 1: Declare Functions
 
-**The functions should have 0 function parameters and returnr a `float`.**
+**The functions should have 0 function parameters and return a `float`.**
 
-In general, functions are declared in headers (`.hpp` files) and defined in
+In general, functions are _declared_ in headers (`.hpp` files) and _defined_ in
 source files (`.cpp` files). The operator interface is no exception (for
 reference refer to [this Stack Overflow
 post](https://stackoverflow.com/questions/25274312/is-it-a-good-practice-to-define-c-functions-inside-header-files)).
+
+_**C++ Tip**: You can think of "declaring" a function as a way of documenting
+the blueprint of a function for others to then use. The declaration will include
+the name of the function, return value, and input parameters. The declaration
+**will not** contain any of the actual logic. On the other hand, "defining" a
+function can be thought of as the actual meat of the function that gives the
+function meaning. An outside observer may use a declared function without
+knowing the actual meat of the function as long as they know the declaration._
 
 The functions should be declared as public members of the
 `ControlOperatorInterface` class. The function should return a value between
@@ -149,19 +179,25 @@ declared as a public member.
 
 class Example {
  public:
-  void greatFunction();
+  void greatFunction();  // Declaration
 };
 
 -----------------------------
 // example.cpp
 
-void Example::greatFunction() {
+void Example::greatFunction() {  // Definition
   // Do great things
 }
 ```
 
 This is because `greatFunction` is declared in the example class within the
 section with `public` at the top.
+
+_**C++ Tip**: C++ classes contain `public`, `protected`, and `private` sections
+of code. In general, a function that is in the public section means anyone can
+call that function. A function that is in the protected section means any child
+object can call that function, and function in the private section means only
+the object can call that function._
 
 ### Step 2: Define Functions
 
@@ -172,16 +208,16 @@ adding `<class name>::` in front of the function name.
 Once you have defined the functions, you have to actually write logic in the
 functions.
 
-Refer to [`generated
+Refer to the remote's [`generated
 documentation`](https://aruw.gitlab.io/controls/taproot/api/classtap_1_1communication_1_1serial_1_1_remote.html)
-for API documentation. These function should call the remote's `getSwitch`
-functions. The left left vertical switch should be used to get user input for
-the left tank drive function and the right vertical switch for the right tank
-drive function.
+to learn how to interact with the remote. The functions you define should call
+the remote's `getSwitch` functions. The left left vertical switch should be used
+to get user input for the left tank drive function and the right vertical switch
+for the right tank drive function.
 
 ## `ChassisSubsystem`
 
-You will be finishing the `ChassisSubsystem` class first in
+Next, you will be finishing the `ChassisSubsystem` class in
 `chassis_subsystem.hpp` and `chassis_subsystem.cpp`.
 
 Again, follow the steps in the files.
@@ -189,11 +225,11 @@ Again, follow the steps in the files.
 ### Step 1: Create ChassisSubsystem Constructor
 
 If you are unfamiliar with C++ class structure, read [this page on C++
-classes](https://cplusplus.com/doc/tutorial/classes/). Much of our logic is
-encapsulated into classes. Each subsystem and command is encapsulated in a
-class. A class constructor is needed to initialize various objects that are
-declared in the class. In the case of the `ChassisSubsystem`, the private
-variables in the `ChassisSubsystem` are shown below.
+classes](https://cplusplus.com/doc/tutorial/classes/). Each subsystem and
+command is encapsulated in a class. A class constructor is needed to initialize
+various objects that are declared in the class. In the case of the
+`ChassisSubsystem`, the private variables in the `ChassisSubsystem` are shown
+below.
 
 ```cpp
     /// @brief Motor ID to index into the velocityPid and motors object.
@@ -308,5 +344,30 @@ functions return values between `[-1, 1]`, so convert this input to
 
 This function should set the chassis's desired speed to all 0s.
 
-## `Soldier`
+## `Robot`
 
+Next, you will be finishing the `Robot` object in `standard.hpp` and
+`standard.cpp`. The `Robot` object is a singleton, which means a single `Robot`
+object is exected to be created. This object is created in `main.cpp`.
+
+Again, follow the steps in the two files and refer to the documentation below to
+help guide you through finishing the `Robot` object.
+
+### Step 1: Declare `ChassisSubsystem`
+
+Note that the subsystem is scoped inside the namespace `control`. Thus
+`control::` will have to be appended on to the object name. Give the chassis you
+declare a name that is something reasonable like `chassis` or
+`chassisSubsystem`.
+
+### Step 2: Declare `ChassisTankDriveCommand`
+
+This should be very similar to step 1.
+
+### Step 3: Construct Subsystem and Command
+
+### Step 4: Initialize Chassis
+
+### Step 5: Register Chassis
+
+### Step 6: Set Tank Drive Command as Default

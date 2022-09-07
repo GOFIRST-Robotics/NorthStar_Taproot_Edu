@@ -17,18 +17,33 @@
  * along with aruw-edu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "control_operator_interface.hpp"
+#pragma once
 
-#include <tap/communication/serial/remote.hpp>
+#include "control/chassis/chassis_subsystem.hpp"
+#include "control/chassis/chassis_tank_drive_command.hpp"
 
-using namespace tap::communication::serial;
+class Drivers;
 
 namespace control
 {
-ControlOperatorInterface::ControlOperatorInterface(tap::communication::serial::Remote &remote)
-    : remote(remote)
+class Robot
 {
-}
+public:
+    Robot(Drivers &drivers);
 
-// Step 2: Add getChassisTankLeftInput and getChassisTankRightInput function definitions
+    void initSubsystemCommands();
+
+private:
+    void initializeSubsystems();
+    void registerSoldierSubsystems();
+    void setDefaultSoldierCommands();
+    void startSoldierCommands();
+    void registerSoldierIoMappings();
+
+    Drivers &drivers;
+
+    // Step 1: declare ChassisSubystem
+
+    // Step 2: declare ChassisTankDriveCommand
+};
 }  // namespace control

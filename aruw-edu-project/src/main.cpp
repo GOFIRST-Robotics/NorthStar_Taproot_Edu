@@ -17,69 +17,45 @@
  * along with aruw-edu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifdef PLATFORM_HOSTED
-/* hosted environment (simulator) includes --------------------------------- */
-#include <iostream>
-
-#include "tap/communication/tcp-server/tcp_server.hpp"
-#include "tap/motor/motorsim/sim_handler.hpp"
-#endif
-
-#include "tap/board/board.hpp"
-
-#include "modm/architecture/interface/delay.hpp"
-
-/* arch includes ------------------------------------------------------------*/
+#include "tap/architecture/clock.hpp"
 #include "tap/architecture/periodic_timer.hpp"
 #include "tap/architecture/profiler.hpp"
+#include "tap/board/board.hpp"
 
-/* communication includes ---------------------------------------------------*/
-#include "drivers.hpp"
+#include "control/robot.hpp"
+#include "modm/architecture/interface/delay.hpp"
+
 #include "drivers_singleton.hpp"
 
-/* error handling includes --------------------------------------------------*/
-#include "tap/errors/create_errors.hpp"
-
-/* control includes ---------------------------------------------------------*/
-#include "tap/architecture/clock.hpp"
-
-/* define timers here -------------------------------------------------------*/
 static constexpr float IMU_SMAPLE_FREQUENCY = 500;
 static constexpr float MAHONY_KP = 0.5f;
 static constexpr float MAHONY_KI = 0;
 
 tap::arch::PeriodicMilliTimer sendMotorTimeout(2);
 
+control::Robot robot(*DoNotUse_getDrivers());
+
 // Place any sort of input/output initialization here. For example, place
 // serial init stuff here.
-static void initializeIo(src::Drivers *drivers);
+static void initializeIo(Drivers *drivers);
 
 // Anything that you would like to be called place here. It will be called
 // very frequently. Use PeriodicMilliTimers if you don't want something to be
 // called as frequently.
-static void updateIo(src::Drivers *drivers);
+static void updateIo(Drivers *drivers);
 
 int main()
 {
-#ifdef PLATFORM_HOSTED
-    std::cout << "Simulation starting..." << std::endl;
-#endif
-
     /*
      * NOTE: We are using DoNotUse_getDrivers here because in the main
      *      robot loop we must access the singleton drivers to update
      *      IO states and run the scheduler.
      */
-    src::Drivers *drivers = src::DoNotUse_getDrivers();
+    Drivers *drivers = DoNotUse_getDrivers();
 
     Board::initialize();
     initializeIo(drivers);
-
-#ifdef PLATFORM_HOSTED
-    tap::motorsim::SimHandler::resetMotorSims();
-    // Blocking call, waits until Windows Simulator connects.
-    tap::communication::TCPServer::MainServer()->getConnection();
-#endif
+    robot.initSubsystemCommands();
 
     while (1)
     {
@@ -98,7 +74,7 @@ int main()
     return 0;
 }
 
-static void initializeIo(src::Drivers *drivers)
+static void initializeIo(Drivers *drivers)
 {
     drivers->analog.init();
     drivers->pwm.init();
@@ -114,7 +90,7 @@ static void initializeIo(src::Drivers *drivers)
     drivers->djiMotorTerminalSerialHandler.init();
 }
 
-static void updateIo(src::Drivers *drivers)
+static void updateIo(Drivers *drivers)
 {
 #ifdef PLATFORM_HOSTED
     tap::motorsim::SimHandler::updateSims();

@@ -22,8 +22,8 @@
 
 #include "tap/drivers.hpp"
 
-namespace src
-{
+#include "control/control_operator_interface.hpp"
+
 class Drivers : public tap::Drivers
 {
     friend class DriversSingleton;
@@ -31,11 +31,10 @@ class Drivers : public tap::Drivers
 #ifdef ENV_UNIT_TESTS
 public:
 #endif
-    Drivers() : tap::Drivers() {}
+    Drivers() : tap::Drivers(), controlOperatorInterface(remote) {}
 
 public:
+    control::ControlOperatorInterface controlOperatorInterface;
 };  // class Drivers
-
-}  // namespace src
 
 #endif  // DRIVERS_HPP_

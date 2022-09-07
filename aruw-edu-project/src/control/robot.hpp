@@ -17,18 +17,10 @@
  * along with aruw-edu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "control_operator_interface.hpp"
+#pragma once
 
-#include <tap/communication/serial/remote.hpp>
-
-using namespace tap::communication::serial;
-
-namespace control
-{
-ControlOperatorInterface::ControlOperatorInterface(tap::communication::serial::Remote &remote)
-    : remote(remote)
-{
-}
-
-// Step 2: Add getChassisTankLeftInput and getChassisTankRightInput function definitions
-}  // namespace control
+#if defined(TARGET_STANDARD)
+#include "standard.hpp"
+#else
+#error "standard only robot supported"
+#endif
