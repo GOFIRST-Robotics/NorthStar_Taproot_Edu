@@ -92,10 +92,6 @@ static void initializeIo(Drivers *drivers)
 
 static void updateIo(Drivers *drivers)
 {
-#ifdef PLATFORM_HOSTED
-    tap::motorsim::SimHandler::updateSims();
-#endif
-
     drivers->canRxHandler.pollCanData();
     drivers->refSerial.updateSerial();
     drivers->remote.read();

@@ -28,6 +28,11 @@ variables:
 .verification_except: &verification_except
   - schedules
 
+.default_only: &default_only
+  - merge_requests
+  - develop
+  - schedules
+
 stages:
   - Build
   - Test
@@ -46,6 +51,7 @@ clang-format:
   script:
     - python3 /run-clang-format.py --clang-format-executable clang-format-10 -r aruw-edu-project/src/ aruw-edu-project/test/
   except: *verification_except
+  only: *default_only
 
 "Policy Checks":
   stage: Quality
@@ -63,10 +69,9 @@ clang-format:
         -i './**/__init__.py' 'taproot/**/*' 'taproot-scripts/**/*' 'aruw-edu-project/taproot/**/*' 'aruw-edu-project/robot-type/robot_type.hpp'
         -o 'Advanced Robotics at the University of Washington'
 
-    - python3 ./taproot-scripts/check_header_guard.py aruw-edu-project/src aruw-edu-project/test/
-
     - ./taproot-scripts/check_taproot_submodule.sh ./aruw-edu-project ./taproot
   except: *verification_except
+  only: *default_only
 
 # Hidden jobs to be extended for each robot
 
@@ -85,12 +90,14 @@ clang-format:
     expire_in: 2 weeks
     reports:
       metrics: metrics.txt
+  only: *default_only
 
 .sim_build:
   stage: Build
   script:
     - cd aruw-edu-project
     - python3 $(which scons) build-sim profile=fast robot=TARGET_$ROBOT -j${NUM_JOBS}
+  only: *default_only
 
 .test_build:
   stage: Build
@@ -100,12 +107,16 @@ clang-format:
   artifacts:
     paths:
       - aruw-edu-project/$DEFAULT_TESTS_BUILD_ELF_FILE
+  only:
+    variables:
+      - $RUN_TESTS
 
 .test_run:
   stage: Test
   script:
     - cd aruw-edu-project
     - valgrind --leak-check=full --error-exitcode=1 --show-leak-kinds=all $DEFAULT_TESTS_BUILD_ELF_FILE
+  only: *default_only
 
 
 # Standard
@@ -150,130 +161,16 @@ clang-format:
         coverage_format: cobertura
         path: cobertura.xml
     expire_in: 2 weeks
+  only:
+    variables:
+      - $RUN_TESTS
 
-# Drone
-
-"Drone: build for hardware":
-  extends:
-    - .hw_build
-  variables:
-    ROBOT: DRONE
-
-"Drone: build for sim":
-  extends:
-    - .sim_build
-  variables:
-    ROBOT: DRONE
-
-"Drone: build for tests":
-  extends:
-    - .test_build
-  variables:
-    ROBOT: DRONE
-
-"Drone: run tests":
-  needs: [ "Drone: build for tests" ]
-  dependencies: [ "Drone: build for tests" ]
-  extends:
-    - .test_run
-  variables:
-    ROBOT: DRONE
-
-
-# Engineer
-
-"Engineer: build for hardware":
-  extends:
-    - .hw_build
-  variables:
-    ROBOT: ENGINEER
-
-"Engineer: build for sim":
-  extends:
-    - .sim_build
-  variables:
-    ROBOT: ENGINEER
-
-"Engineer: build for tests":
-  extends:
-    - .test_build
-  variables:
-    ROBOT: ENGINEER
-
-"Engineer: run tests":
-  needs: [ "Engineer: build for tests" ]
-  dependencies: [ "Engineer: build for tests" ]
-  extends:
-    - .test_run
-  variables:
-    ROBOT: ENGINEER
-
-
-# Hero
-
-"Hero: build for hardware":
-  extends:
-    - .hw_build
-  variables:
-    ROBOT: HERO
-
-"Hero: build for sim":
-  extends:
-    - .sim_build
-  variables:
-    ROBOT: HERO
-
-"Hero: build for tests":
-  extends:
-    - .test_build
-  variables:
-    ROBOT: HERO
-
-"Hero: run tests":
-  needs: [ "Hero: build for tests" ]
-  dependencies: [ "Hero: build for tests" ]
-  extends:
-    - .test_run
-  variables:
-    ROBOT: HERO
-
-
-# Sentry
-
-"Sentry: build for hardware":
-  extends:
-    - .hw_build
-  variables:
-    ROBOT: SENTRY
-
-"Sentry: build for sim":
-  extends:
-    - .sim_build
-  variables:
-    ROBOT: SENTRY
-
-"Sentry: build for tests":
-  extends:
-    - .test_build
-  variables:
-    ROBOT: SENTRY
-
-"Sentry: run tests":
-  needs: [ "Sentry: build for tests" ]
-  dependencies: [ "Sentry: build for tests" ]
-  extends:
-    - .test_run
-  variables:
-    ROBOT: SENTRY
-
-
-# Pages deploy
-
-pages:
+"Generate Docs":
   image: alpine
-  stage: Deploy Pages
+  needs: []
   variables:
     GIT_SUBMODULE_STRATEGY: none
+  stage: Deploy Pages
   before_script:
     - apk update
     - apk add py-pip python3-dev
@@ -281,11 +178,31 @@ pages:
     - apk add --no-cache g++ gcc libxml2-dev libxslt-dev
     - pip3 install lxml
     - pip3 install sphinx breathe exhale
-    - pip install sphinx_rtd_theme
+    - pip install sphinx_rtd_theme myst-parser linkify-it-py sphinx-autodoc-typehints sphinxcontrib-mermaid sphinxcontrib-youtube sphinx-rtd-dark-mode
     - apk add doxygen
   script:
     - cd docs && make html
     - mv _build/html/ ../public/
+  artifacts:
+    paths:
+      - public
+  only:
+    - develop
+    - merge_requests
+  except:
+    - schedules
+  environment:
+    name: "docs preview ${CI_COMMIT_REF_SLUG}"
+    url: "https://aruw.gitlab.io/-/controls/$CI_PROJECT_NAME/-/jobs/$CI_JOB_ID/artifacts/public/index.html"
+
+pages:
+  image: alpine
+  needs: ["Generate Docs"]
+  dependencies: ["Generate Docs"]
+  variables:
+    GIT_SUBMODULE_STRATEGY: none
+  stage: Deploy Pages
+  script: "true"
   artifacts:
     paths:
       - public
