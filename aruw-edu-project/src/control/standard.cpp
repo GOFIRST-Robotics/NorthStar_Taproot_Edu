@@ -26,8 +26,8 @@
 
 #include "drivers.hpp"
 
-using tap::motor::MotorId;
 using tap::can::CanBus;
+using tap::motor::MotorId;
 
 namespace control
 {
@@ -39,7 +39,7 @@ Robot::Robot(Drivers &drivers) : drivers(drivers)
 void Robot::initSubsystemCommands()
 {
     initializeSubsystems();
-    registerSoldierIoMappings();
+    registerSoldierSubsystems();
     setDefaultSoldierCommands();
     startSoldierCommands();
     registerSoldierIoMappings();

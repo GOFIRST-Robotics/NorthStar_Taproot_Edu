@@ -19,16 +19,15 @@
 
 #include "control_operator_interface.hpp"
 
-#include <tap/communication/serial/remote.hpp>
+#include "tap/algorithms/math_user_utils.hpp"
+#include "tap/communication/serial/remote.hpp"
 
-using namespace tap::communication::serial;
+using tap::algorithms::limitVal;
+using tap::communication::serial::Remote;
 
 namespace control
 {
-ControlOperatorInterface::ControlOperatorInterface(tap::communication::serial::Remote &remote)
-    : remote(remote)
-{
-}
+ControlOperatorInterface::ControlOperatorInterface(Remote &remote) : remote(remote) {}
 
 // Step 2: Add getChassisTankLeftInput and getChassisTankRightInput function definitions
 }  // namespace control

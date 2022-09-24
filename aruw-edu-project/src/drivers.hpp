@@ -22,7 +22,11 @@
 
 #include "tap/drivers.hpp"
 
+#ifdef ENV_UNIT_TESTS
+#include "control/mock_control_operator_interface.hpp"
+#else
 #include "control/control_operator_interface.hpp"
+#endif
 
 class Drivers : public tap::Drivers
 {
@@ -34,7 +38,11 @@ public:
     Drivers() : tap::Drivers(), controlOperatorInterface(remote) {}
 
 public:
+#ifdef ENV_UNIT_TESTS
+    control::MockControlOperatorInterface controlOperatorInterface;
+#else
     control::ControlOperatorInterface controlOperatorInterface;
+#endif
 };  // class Drivers
 
 #endif  // DRIVERS_HPP_

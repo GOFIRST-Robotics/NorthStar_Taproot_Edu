@@ -53,7 +53,23 @@ struct ChassisConfig
 class ChassisSubsystem : public tap::control::Subsystem
 {
 public:
+    /// @brief Motor ID to index into the velocityPid and motors object.
+    enum class MotorId : uint8_t
+    {
+        LF = 0,  ///< Left front
+        LB,      ///< Left back
+        RF,      ///< Right front
+        RB,      ///< Right back
+        NUM_MOTORS,
+    };
+
     using Pid = modm::Pid<float>;
+
+#if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
+    using Motor = tap::mock::DjiMotorMock;
+#else
+    using Motor = tap::motor::DjiMotor;
+#endif
 
     static constexpr float MAX_WHEELSPEED_RPM = 7000;
 
@@ -82,29 +98,14 @@ public:
     const char* getName() override { return "Chassis"; }
 
 private:
-    /// @brief Motor ID to index into the velocityPid and motors object.
-    enum class MotorId : uint8_t
-    {
-        LF = 0,  ///< Left front
-        LB,      ///< Left back
-        RF,      ///< Right front
-        RB,      ///< Right back
-        NUM_MOTORS,
-    };
-
     /// Desired wheel output for each motor
     std::array<float, static_cast<uint8_t>(MotorId::NUM_MOTORS)> desiredOutput;
 
     /// PID controllers. Input desired wheel velocity, output desired motor current.
     std::array<Pid, static_cast<uint8_t>(MotorId::NUM_MOTORS)> pidControllers;
 
-#if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
-public:
-    /// Replace motors with mocks during testing.
-    std::array<tap::mock::DjiMotorMock, static_cast<uint8_t>(MotorId::NUM_MOTORS)> motors;
-#else
+protected:
     /// Motors.
-    std::array<tap::motor::DjiMotor, static_cast<uint8_t>(MotorId::NUM_MOTORS)> motors;
-#endif
+    std::array<Motor, static_cast<uint8_t>(MotorId::NUM_MOTORS)> motors;
 };  // class ChassisSubsystem
 }  // namespace control::chassis

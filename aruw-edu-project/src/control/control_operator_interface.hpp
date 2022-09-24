@@ -19,6 +19,8 @@
 
 #pragma once
 
+#include "tap/util_macros.hpp"
+
 namespace tap::communication::serial
 {
 class Remote;
