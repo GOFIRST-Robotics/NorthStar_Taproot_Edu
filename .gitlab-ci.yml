@@ -39,9 +39,6 @@ stages:
   - Quality
   - Deploy Pages
 
-before_script:
-  - python3 -V # Print out python version for debugging
-
 # Quality
 # Last stage, but configured to not depend on preceding jobs
 
