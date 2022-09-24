@@ -66,7 +66,7 @@ public:
     using Pid = modm::Pid<float>;
 
 #if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
-    using Motor = tap::mock::DjiMotorMock;
+    using Motor = testing::NiceMock<tap::mock::DjiMotorMock>;
 #else
     using Motor = tap::motor::DjiMotor;
 #endif
