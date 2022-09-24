@@ -1,3 +1,5 @@
+# Tank Drive Tutorial
+
 ## Hardware
 
 The chassis is a fundamental subsystem for many RoboMaster robots. Our 2022
@@ -18,6 +20,8 @@ standard chassis consists of the following hardware:
   motor controller. The motor takes commands from the motor controller and sends
   information back to the motor controller. Each motor is connected to a
   [mecanum wheel]().
+- Remote control receiver. The [DR-16 receiver]() is used to wirelessly receive
+  remote control information from a paired [remote]().
 
 ## Tank Drive
 
@@ -108,7 +112,7 @@ unfamiliar with using Git.
   Solutions are available; however, these should not be referenced unless
   absolutely necessary. Doing so defeats the purpose of this tutorial.
 
-- Various C++ tips that are not specific to our codebase will be italicized.
+- Various C++ tips that are not specific to our codebase will be in a note block.
 
 ## Overview
 
@@ -132,6 +136,99 @@ section you will be developing.
 - **`Robot`**: Where instances of the `ChassisSubsystem`, `ChassisDriveCommand`,
   and other control-related object instances are instantiated.
 
+```{note}
+**C++ Tip**: In C++, pointers, references, and variables are two very important
+concepts that you must understand to successfully completet this tutorial.
+Often, tutorials might state something like "pass variable X to function Y."
+This statement in itself is ambiguous. In order to follow such an instruction,
+you must be able to understand how you are passing variable X, be that as a
+reference, pointer, or variable. If you do not have experience with C++
+pointers, review [this
+slideshow](https://courses.cs.washington.edu/courses/cse333/20sp/lectures/03-c-pointers.pdf).
+If you do not have experience with C++ references, review [this slideshow](). It
+is not expected that you are a master of pointers, references, and variables
+before starting this tutorial, but it generally useful to have a base
+understanding of how they work.
+
+To test your understanding, answer the following questions:
+
+  - Define `foo`, `bar`, and `baz` as pointers, references, or variables.
+    ```{code-block}cpp
+    void function()
+    {
+      int foo{42};
+      int *bar = &foo;
+      int &baz = foo;
+    }
+    ```
+    <details>
+    <summary>Answer</summary>
+      <code>foo</code>: variable<br>
+      <code>bar</code>: pointer<br>
+      <code>baz</code>: reference
+    </details>
+
+  - In the function `f1` defined below, how would you call `f2`, `f3`, and `f4`
+    respectively, passing the variable `foo` to these three functions?
+    ```cpp
+    void f2(int var)
+    {
+      // Print var and address of var
+      std::cout << var << ", " << &var << std::endl;
+    }
+
+    void f3(int *var)
+    {
+      // Print var and address of var
+      std::cout << var << ", " << &var << std::endl;
+    }
+
+    void f4(int &var)
+    {
+      // Print var and address of var
+      std::cout << var << ", " << &var << std::endl;
+    }
+
+    void f1()
+    {
+      int foo{42};
+      // Now call f2, f3, and f4, passing foo to each.
+    }
+    ```
+    <details>
+    <summary>Answer</summary>
+    <code>f2(foo)</code>, <code>f3(&foo)</code>, <code>f4(foo)</code>
+    </details>
+
+    Bonus question, will `f2`, `f3` and `f4` print identical values when the
+    functions above are called from `f1()`?
+
+    <details>
+    <summary>Answer</summary>
+    No, <code>f2</code> will print a different result compared to <code>f3</code> and <code>f4</code>. While <code>var</code>
+    is the same, the address of <code>var</code> is not in <code>f2</code>'s case since a copy of foo is
+    being created for <code>f2</code> when you pass <code>foo</code> as a variable instead of a pointer
+    or reference.
+    </details>
+
+    Bonus question 2, assume `f1()` has now been changed to the following:
+    ```{code-block}cpp
+    void f1()
+    {
+      int *foo = new int();
+      // Now call f2, f3, and f4, passing foo to each
+      delete foo;
+    }
+    ```
+    How would you call `f2`, `f3`, and `f4` respectively, passing the variable
+    `foo` to these three functions?
+
+    <details>
+    <summary>Answer</summary>
+    <code>f2(*foo)</code>, <code>f3(foo)</code>, <code>f4(*foo)</code>
+    </details>
+```
+
 ## `ControlOperatorInterface`
 
 First you will be adding a couple of functions to the `ControlOperatorInterface`
@@ -139,13 +236,15 @@ object in `control_operator_interface.hpp` and `control_operator_interface.cpp`.
 In these files, you will find sections labeled `// STEP <n>`. Hints
 corresponding to these sections are listed below to help you along.
 
-_**C++ Tip**: In C++, we break apart separate logical units into classes similar
+```{note}
+**C++ Tip**: In C++, we break apart separate logical units into classes similar
 to Java. In the normal case, each C++ class will have an associated **header**
 file (suffixed commonly by .hpp) and **source** file (suffixed commonly by
 .cpp). Typical naming convention associates class and file names together. For
 instance, a class named `ContiguousFloat` will be housed in corresponding source
 and header files named `contiguous_float.cpp` and `contiguous_float.hpp`
-respectively._
+respectively.
+```
 
 You will be adding the `getChassisTankLeftInput` and `getChassisTankRightInput`
 functions to the operator interface.
@@ -193,11 +292,16 @@ void Example::greatFunction() {  // Definition
 This is because `greatFunction` is declared in the example class within the
 section with `public` at the top.
 
-_**C++ Tip**: C++ classes contain `public`, `protected`, and `private` sections
+```{note}
+**C++ Tip**: C++ classes contain `public`, `protected`, and `private` sections
 of code. In general, a function that is in the public section means anyone can
 call that function. A function that is in the protected section means any child
 object can call that function, and function in the private section means only
-the object can call that function._
+the object can call that function.
+```
+
+Note: When declaring the functions, add the keyword `mockable` in front of the
+declaration to aid with unit testability.
 
 ### Step 2: Define Functions
 
@@ -356,18 +460,94 @@ help guide you through finishing the `Robot` object.
 ### Step 1: Declare `ChassisSubsystem`
 
 Note that the subsystem is scoped inside the namespace `control`. Thus
-`control::` will have to be appended on to the object name. Give the chassis you
-declare a name that is something reasonable like `chassis` or
-`chassisSubsystem`.
+`control::` will have to be appended on to the object name. For unit test
+purposes, this object should be named `chassisSubsystem`.
+
+```{note}
+**C++ Tip:** Unlike in Java, declaring a variable of class or struct type
+automatically instantiates that type -- there are no "null references" in C++,
+and in fact, reference semantics as seen in Java are only applicable to C++
+pointers. If you don't know how to instantiate objects in C++, look
+[here](http://www.cplusplus.com/doc/tutorial/classes/).
+```
+
 
 ### Step 2: Declare `ChassisTankDriveCommand`
 
-This should be very similar to step 1.
+This should be very similar to step 1. For unit test purposes, this object
+should be named `chassisTankDriveCommand`.
 
 ### Step 3: Construct Subsystem and Command
 
+Now that you have declared your subsystem and command in `standard.hpp`, you
+must construct these objects in `standard.cpp`. Use your understanding of C++
+member initialization to construct these the `ChassisSubsystem` and
+`ChassisTankDriveCommand`.
+
 ### Step 4: Initialize Chassis
+
+In the `initializeSubsystems()` function in `standard.cpp`, you must manually
+initialize the `chassisSubsystem` object. Call `chassisSubsystem`'s `initialize`
+function here.
 
 ### Step 5: Register Chassis
 
+Any `Subsystem` you would like the command scheduler to manage must be
+registered with it during runtime. The `Drivers` object that the `Standard` has
+a reference to contains the main `CommandScheduler` that you should register the
+`ChassisSubsystem` you created with. Refer to the `CommandScheduler`'s
+[`registerSubsystem` function]().
+
 ### Step 6: Set Tank Drive Command as Default
+
+We want the tank drive command you constructed to be a default command of the
+chassis subsystem command you created. This way, the command scheduler will
+execute the tank drive command whenever no other commands that have the chassis
+subsystem as a dependency are running (so for now, all the time). To do so, the
+`Subsystem` class (the `ChassisSubsystem` is a child of `Subsystem`) has a
+function called `setDefaultCommand`. In the `setDefaultSoldierCommands`
+subsystem, call this function, passing the `ChassisTankDriveCommand` you
+declared previously.
+
+## Run Tests
+
+At this point, you should have completed all required software for the tank
+drive tutorial. Before running the software you wrote on a robot, it is expected
+that you code has unit tests associated with it. For this tutrial, uint tests
+have been provided, so you do not have to write your own (see
+`./aruw-edu-project/test/control`).
+
+To compile and run tests for the chassis tank drive, run `scons run-tests`.
+
+## Run Code on a Robot
+
+It is now time to test and debug your code. Before you begin, **it is imperative
+that you read the [debugging safety
+information](https://gitlab.com/aruw/controls/taproot/-/wikis/Debugging-Safety-Information)
+page**. I cannot stress this enough.
+
+It is now time to run and debug your code. Reading the [debugging information
+for using the the
+ST-Link](https://gitlab.com/aruw/controls/taproot/-/wikis/Debugging-With-STLink)
+and [debugging information for using the
+J-Link](https://gitlab.com/aruw/controls/taproot/-/wikis/Debugging-With-JLink)
+will give you a good base for debugging your code.
+
+After reading these guides, test your code on the soldier. You should ask
+another member for help getting the robot set up, though below is a list of some
+things you should follow specific to this tutorial:
+
+- You probably need a robot. Ask someone if you don't know where to find one.
+- Before you begin, **prop the robot up on blocks**.
+- Unplug power to everything but the chassis (again, ask another member for help
+  so this is done correctly).
+- Ensure the remote is connected to the robot's MCB.
+
+After you are completed debugging, you should have functional tank drive
+control. Following the same steps from above, **add, commit, and push your code
+to the main repo** so it can be reviewed. Again, I recommend our [Git
+tutorial](https://gitlab.com/aruw/controls/taproot/-/wikis/Git-Tutorial) if you
+are having trouble.
+
+Finally, find another member to review your code to ensure quality by opening up
+a merge request.

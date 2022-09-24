@@ -17,8 +17,7 @@
  * along with aruw-edu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef DRIVERS_HPP_
-#define DRIVERS_HPP_
+#pragma once
 
 #include "tap/drivers.hpp"
 
@@ -44,5 +43,3 @@ public:
     control::ControlOperatorInterface controlOperatorInterface;
 #endif
 };  // class Drivers
-
-#endif  // DRIVERS_HPP_
