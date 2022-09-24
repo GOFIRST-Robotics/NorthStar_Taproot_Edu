@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2022 Advanced Robotics at the University of Washington <robomstr@uw.edu>
+ * Copyright (c) 2020-2021 Advanced Robotics at the University of Washington <robomstr@uw.edu>
  *
  * This file is part of aruw-edu.
  *
@@ -17,21 +17,23 @@
  * along with aruw-edu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "chassis_tank_drive_command.hpp"
+#pragma once
 
-#include "tap/algorithms/math_user_utils.hpp"
+#include <gmock/gmock.h>
 
 #include "control/control_operator_interface.hpp"
 
-#include "chassis_subsystem.hpp"
-
-using tap::algorithms::limitVal;
-
-namespace control::chassis
+namespace control
 {
-// Step 1: Constructor
+class MockControlOperatorInterface : public ControlOperatorInterface
+{
+public:
+    MockControlOperatorInterface(tap::communication::serial::Remote &remote)
+        : ControlOperatorInterface(remote)
+    {
+    }
 
-// Step 2: execute function
-
-// Step 3: end function
-};  // namespace control::chassis
+    MOCK_METHOD(float, getChassisTankLeftInput, (), (override));
+    MOCK_METHOD(float, getChassisTankRightInput, (), (override));
+};
+}  // namespace control

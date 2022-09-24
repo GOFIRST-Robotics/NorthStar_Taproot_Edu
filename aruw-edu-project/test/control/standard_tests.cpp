@@ -17,21 +17,31 @@
  * along with aruw-edu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "chassis_tank_drive_command.hpp"
+#include <gtest/gtest.h>
 
-#include "tap/algorithms/math_user_utils.hpp"
+#include "control/standard.hpp"
 
-#include "control/control_operator_interface.hpp"
+#include "drivers.hpp"
 
-#include "chassis_subsystem.hpp"
-
-using tap::algorithms::limitVal;
-
-namespace control::chassis
+namespace control
 {
-// Step 1: Constructor
+class ARUW_EDU_Standard : public testing::Test
+{
+protected:
+    ARUW_EDU_Standard() : robot(drivers){};
 
-// Step 2: execute function
+    Drivers drivers;
 
-// Step 3: end function
-};  // namespace control::chassis
+    Robot robot;
+};
+
+TEST_F(ARUW_EDU_Standard, Initialization)
+{
+    EXPECT_CALL(drivers.commandScheduler, registerSubsystem)
+        .WillOnce([](tap::control::Subsystem *sub) {
+            EXPECT_NE(nullptr, dynamic_cast<chassis::ChassisSubsystem *>(sub));
+        });
+
+    robot.initSubsystemCommands();
+}
+}  // namespace control
