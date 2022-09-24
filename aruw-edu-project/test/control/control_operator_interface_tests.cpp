@@ -53,6 +53,13 @@ struct GetterParams
     float expectedResult{};
 };
 
+std::ostream &operator<<(std::ostream &stream, const GetterParams &params)
+{
+    stream << "{" << &params.defineRemoteExpectations << ", " << &params.callGetter << ", "
+           << params.expectedResult << "}";
+    return stream;
+}
+
 class GetterParameterized : public ARUW_EDU_ControlOperatorInterface,
                             public testing::WithParamInterface<GetterParams>
 {
