@@ -6,6 +6,6 @@ Work through the various tutorials.
 .. toctree::
     :maxdepth: 2
     :caption: Contents:
+    :glob:
 
-    tutorials/1_tank_drive
-    tutorials/2_agitator_control
+    tutorials/*

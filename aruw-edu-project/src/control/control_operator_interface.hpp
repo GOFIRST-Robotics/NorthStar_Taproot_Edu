@@ -33,7 +33,8 @@ class ControlOperatorInterface
 public:
     ControlOperatorInterface(tap::communication::serial::Remote &remote);
 
-    // Step 1: Add getChassisTankLeftInput and getChassisTankRightInput function declarations
+    // STEP 1 (Tank Drive): Add getChassisTankLeftInput and getChassisTankRightInput function
+    // declarations
 
 private:
     tap::communication::serial::Remote &remote;

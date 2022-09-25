@@ -173,9 +173,7 @@ clang-format:
     - apk add py-pip python3-dev
     - apk add make
     - apk add --no-cache g++ gcc libxml2-dev libxslt-dev
-    - pip3 install lxml
-    - pip3 install sphinx breathe exhale
-    - pip install sphinx_rtd_theme myst-parser linkify-it-py sphinx-autodoc-typehints sphinxcontrib-mermaid sphinxcontrib-youtube sphinx-rtd-dark-mode
+    - pip3 install -r docs/requirements.txt
     - apk add doxygen
   script:
     - cd docs && make html

@@ -29,5 +29,6 @@ namespace control
 {
 ControlOperatorInterface::ControlOperatorInterface(Remote &remote) : remote(remote) {}
 
-// Step 2: Add getChassisTankLeftInput and getChassisTankRightInput function definitions
+// STEP 2 (Tank Drive): Add getChassisTankLeftInput and getChassisTankRightInput function
+// definitions
 }  // namespace control

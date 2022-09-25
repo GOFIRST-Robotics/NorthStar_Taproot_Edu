@@ -5,6 +5,10 @@ repository has been completed. It is currently in development.
 
 ## Resources
 
+To get started with the aruw-edu tutorials, refer to the [aruw-edu wiki](https://aruw.gitlab.io/controls/aruw-edu/).
+
+Other resources:
+
 - **The [Taproot wiki](https://gitlab.com/aruw/controls/taproot/-/wikis/home). It has lots of content and we strongly recommend you browse through it to get a sense of
   what's there.**
 - [aruw-edu](https://gitlab.com/aruw/controls/aruw-edu): a hands-on tutorial for building robot code with Taproot

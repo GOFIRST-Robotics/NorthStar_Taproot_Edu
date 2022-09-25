@@ -32,7 +32,7 @@ using tap::motor::MotorId;
 namespace control
 {
 Robot::Robot(Drivers &drivers) : drivers(drivers)
-// Step 3: construct ChassisSubsystem and ChassisTankDriveCommand
+// STEP 3 (Tank Drive): construct ChassisSubsystem and ChassisTankDriveCommand
 {
 }
 
@@ -47,17 +47,17 @@ void Robot::initSubsystemCommands()
 
 void Robot::initializeSubsystems()
 {
-    // Step 4: initialize declared ChassisSubsystem
+    // STEP 4 (Tank Drive): initialize declared ChassisSubsystem
 }
 
 void Robot::registerSoldierSubsystems()
 {
-    // Step 5: register declared ChassisSubsystem
+    // STEP 5 (Tank Drive): register declared ChassisSubsystem
 }
 
 void Robot::setDefaultSoldierCommands()
 {
-    // Step 6: set ChassisTanKDriveCommand as default command for ChassisSubsystem
+    // STEP 6 (Tank Drive): set ChassisTanKDriveCommand as default command for ChassisSubsystem
 }
 
 void Robot::startSoldierCommands() {}

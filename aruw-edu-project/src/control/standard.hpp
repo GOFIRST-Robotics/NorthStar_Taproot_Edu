@@ -42,8 +42,8 @@ private:
 
     Drivers &drivers;
 
-    // Step 1: declare ChassisSubystem
+    // STEP 1 (Tank Drive): declare ChassisSubystem
 
-    // Step 2: declare ChassisTankDriveCommand
+    // STEP 2 (Tank Drive): declare ChassisTankDriveCommand
 };
 }  // namespace control

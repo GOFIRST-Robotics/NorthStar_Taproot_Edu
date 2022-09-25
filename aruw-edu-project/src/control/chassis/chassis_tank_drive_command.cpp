@@ -29,9 +29,9 @@ using tap::algorithms::limitVal;
 
 namespace control::chassis
 {
-// Step 1: Constructor
+// STEP 1 (Tank Drive): Constructor
 
-// Step 2: execute function
+// STEP 2 (Tank Drive): execute function
 
-// Step 3: end function
+// STEP 3 (Tank Drive): end function
 };  // namespace control::chassis
