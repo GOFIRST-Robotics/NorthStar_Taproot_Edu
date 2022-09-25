@@ -89,7 +89,7 @@
             "other": "off"
         },
         "editor.rulers": [
-            100
+            80
         ]
     },
 }
