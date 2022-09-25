@@ -23,12 +23,14 @@
 #include "tap/control/setpoint/interfaces/integrable_setpoint_subsystem.hpp"
 #include "tap/motor/dji_motor.hpp"
 
+#include "control/algorithms/edu_pid.hpp"
+
 namespace aruwsrc
 {
 class Drivers;
 }
 
-namespace aruwsrc::agitator
+namespace control::agitator
 {
 /**
  * Subsystem whose primary purpose is to encapsulate an agitator motor that operates using a
@@ -42,19 +44,18 @@ public:
      * Agitator gear ratios of different motors, for determining shaft rotation angle.
      */
     static constexpr float AGITATOR_GEAR_RATIO_M2006 = 36.0f;
-    static constexpr float AGITATOR_GEAR_RATIO_GM3508 = (3591.0f / 187.0f);
 
     /**
      * Construct an agitator with the passed in velocity PID parameters, gear ratio, and
      * agitator-specific configuration.
      *
-     * @param[in] drivers pointer to aruwsrc drivers struct
-     * @param[in] pidParams Position PID configuration struct for the agitator motor controller.
+     * @param[in] drivers Reference to aruwsrc drivers struct
+     * @param[in] pidConfig PID configuration struct for the agitator motor controller.
      * @param[in] agitator The base motor that this agitator subsystem is is going to control.
      */
     VelocityAgitatorSubsystem(
-        aruwsrc::Drivers* drivers,
-        const tap::algorithms::SmoothPidConfig& pidParams,
+        aruwsrc::Drivers& drivers,
+        const control::algorithms::EduPidConfig& pidConfig,
         tap::motor::DjiMotor& agitator);
 
     void initialize() override;
@@ -108,7 +109,7 @@ public:
      * @return `true` if the agitator has been calibrated (`calibrateHere` has been called and the
      * agitator motor is online).
      */
-    bool isCalibrated() override;
+    bool isCalibrated() override { return calibrated; }
 
     /**
      * @return `true` if the agitator motor is online (i.e.: is connected)
@@ -130,9 +131,18 @@ public:
     float getCurrentValueIntegral() const override;
 
 private:
+    /// @return Uncalibrated agitator angle.
+    float getUncalibratedAgitatorAngle() const;
+
     tap::motor::DjiMotor& agitator;
 
-    tap::algorithms::SmoothPid velocityPid;
+    control::algorithms::EduPid velocityPid;
+
+    float velocitySetpoint{0};
+
+    bool calibrated{false};
+
+    float agitatorCalibratedZeroAngle{0};
 };
 
-}  // namespace aruwsrc::agitator
+}  // namespace control::agitator

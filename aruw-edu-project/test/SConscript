@@ -45,5 +45,8 @@ if args["TARGET_ENV"] == "tests":
         sources.append(env_cpy.Object("control/standard_tests.cpp"))
     if "agitator_control" in args["TUTORIALS"]:
         print("building tests for agitator control")
+        append_with_prefix("control/agitator")
+        append_with_prefix("control/algorithms")
+        sources.append("control/standard_agitator_control_tests.cpp")
 
 Return('sources')

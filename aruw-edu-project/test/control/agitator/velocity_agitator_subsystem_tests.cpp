@@ -17,33 +17,8 @@
  * along with aruw-edu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "velocity_agitator_subsystem.hpp"
-
-#include "modm/math/geometry/angle.hpp"
-
-using tap::motor::DjiMotor;
+#include "control/agitator/velocity_agitator_subsystem.hpp"
 
 namespace control::agitator
 {
-// STEP 1 (Agitator Control): create constructor
-
-// STEP 2 (Agitator Control): initialize function
-
-// STEP 3 (Agitator Control): refresh function
-
-// STEP 4 (Agitator Control): getSetpoint function
-
-// STEP 5 (Agitator Control): getCurrentValue function
-
-// STEP 6 (Agitator Control): calibrateHere function
-
-// STEP 7 (Agitator Control): isOnline function
-
-// STEP 8 (Agitator Control): getCurrentValueIntegral function
-
-float VelocityAgitatorSubsystem::getUncalibratedAgitatorAngle() const
-{
-    return (2.0f * M_PI / static_cast<float>(DjiMotor::ENC_RESOLUTION)) *
-           agitator.getEncoderUnwrapped() / AGITATOR_GEAR_RATIO_M2006;
-}
 }  // namespace control::agitator
