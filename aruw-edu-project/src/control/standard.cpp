@@ -33,6 +33,8 @@ namespace control
 {
 Robot::Robot(Drivers &drivers) : drivers(drivers)
 // STEP 3 (Tank Drive): construct ChassisSubsystem and ChassisTankDriveCommand
+// STEP 3 (Agitator Control): construct VelocityAgitatorSubsystem and MoveIntegralCommand
+// STEP 8 (Agitator Control): construct HoldRepeatCommandMapping and HoldCommandMapping
 {
 }
 
@@ -48,11 +50,13 @@ void Robot::initSubsystemCommands()
 void Robot::initializeSubsystems()
 {
     // STEP 4 (Tank Drive): initialize declared ChassisSubsystem
+    // STEP 4 (Agitator Control): initialize declared VelocityAgitatorSubsystem
 }
 
 void Robot::registerSoldierSubsystems()
 {
     // STEP 5 (Tank Drive): register declared ChassisSubsystem
+    // STEP 5 (Agitator Control): register declared VelocityAgitatorSubsystem
 }
 
 void Robot::setDefaultSoldierCommands()
@@ -62,5 +66,8 @@ void Robot::setDefaultSoldierCommands()
 
 void Robot::startSoldierCommands() {}
 
-void Robot::registerSoldierIoMappings() {}
+void Robot::registerSoldierIoMappings()
+{
+    // STEP 9 (Agitator Control): register HoldRepeatCommandMapping and HoldCommandMapping
+}
 }  // namespace control

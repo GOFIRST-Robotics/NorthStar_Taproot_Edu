@@ -4,7 +4,7 @@ Welcome to aruw-edu's documentation!
 Work through the various tutorials.
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 10
     :caption: Contents:
     :glob:
 

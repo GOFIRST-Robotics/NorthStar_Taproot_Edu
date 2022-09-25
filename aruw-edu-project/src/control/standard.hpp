@@ -19,6 +19,11 @@
 
 #pragma once
 
+#include "tap/control/hold_command_mapping.hpp"
+#include "tap/control/hold_repeat_command_mapping.hpp"
+#include "tap/control/setpoint/commands/move_integral_command.hpp"
+
+#include "control/agitator/velocity_agitator_subsystem.hpp"
 #include "control/chassis/chassis_subsystem.hpp"
 #include "control/chassis/chassis_tank_drive_command.hpp"
 
@@ -45,5 +50,13 @@ private:
     // STEP 1 (Tank Drive): declare ChassisSubystem
 
     // STEP 2 (Tank Drive): declare ChassisTankDriveCommand
+
+    // STEP 1 (Agitator Control): declare VelocityAgitatorSubsystem
+
+    // STEP 2 (Agitator Control): declare MoveIntegralCommand
+
+    // STEP 6 (Agitator Control): declare HoldRepeatCommandMapping (rightSwitchUp)
+
+    // STEP 7 (Agitator Control): declare HoldCommandMapping (leftMousePressed)
 };
 }  // namespace control

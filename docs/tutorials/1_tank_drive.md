@@ -510,6 +510,7 @@ functions return values between `[-1, 1]`, so convert this input to
 
 This function should set the chassis's desired speed to all 0s.
 
+(tank_drive_robot)=
 ## `Robot`
 
 Next, you will be finishing the `Robot` object in
@@ -577,12 +578,14 @@ declared previously.
 
 At this point, you should have completed all required software for the tank
 drive tutorial. Before running the software you wrote on a robot, it is expected
-that you code has unit tests associated with it. For this tutrial, uint tests
+that you code has unit tests associated with it. For this tutorial, unit tests
 have been provided, so you do not have to write your own (see
 `./aruw-edu-project/test/control`).
 
-To compile and run tests for the chassis tank drive, run `scons run-tests`.
+To compile and run tests for the chassis tank drive, run `scons run-tests
+tutorial_to_test=tanK_drive`.
 
+(tank_drive_run_code_on_a_robot)=
 ## Run Code on a Robot
 
 It is now time to test and debug your code. Before you begin, **it is imperative
@@ -606,6 +609,9 @@ things you should follow specific to this tutorial:
 - Unplug power to everything but the chassis (again, ask another member for help
   so this is done correctly).
 - Ensure the remote is connected to the robot's MCB.
+
+(tank_drive_final_steps)=
+## Final Steps
 
 After you are completed debugging, you should have functional tank drive
 control. Following the same steps from above, **add, commit, and push your code
