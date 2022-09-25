@@ -163,7 +163,7 @@ Below is the full usage statement from our scons build environment. Note that yo
 robot, profile, or whether or not you want profiling to be on using the various options.
 
 ```
-Usage: scons <target> [profile=<debug|release|fast>] [robot=TARGET_<ROBOT_TYPE>] [profiling=<true|false>]
+Usage: scons <target> [profile=<debug|release|fast>] [robot=TARGET_<ROBOT_TYPE>] [profiling=<true|false>] [tutorial_to_test=<tank_drive|agitator_control>]
     "<target>" is one of:
         - "build": build all code for the hardware platform.
         - "run": build all code for the hardware platform, and deploy it to the board via a connected ST-Link.
@@ -174,5 +174,8 @@ Usage: scons <target> [profile=<debug|release|fast>] [robot=TARGET_<ROBOT_TYPE>]
         - "run-sim": build all code for the simulated environment, for the current host platform, and execute the simulator locally.
     "TARGET_<ROBOT_TYPE>" is an optional argument that can override whatever robot type has been specified in robot_type.hpp.
         - <ROBOT_TYPE> must be one of the following:
-            - STANDARD:
+            - STANDARD
+    "tutorial_to_test" is an optional parameter that allows you to build the unit tests for only the tutorial you are working on.
+        This is useful since not all unit tests will compile until all tutorials are complete, yet you want to run unit tests on all
+        tutorials as you go
 ```

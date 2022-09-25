@@ -25,8 +25,9 @@ SIM_BUILD_TARGET_ACCEPTED_ARGS      = ["build-sim", "run-sim"]
 HARDWARE_BUILD_TARGET_ACCEPTED_ARGS = ["build", "run", "size", "gdb", "all"]
 VALID_BUILD_PROFILES                = ["debug", "release", "fast"]
 VALID_PROFILING_TYPES               = ["true", "false"]
+VALID_TUTORIALS                     = ["tank_drive", "agitator_control"]
 
-USAGE = "Usage: scons <target> [profile=<debug|release|fast>] [robot=TARGET_<ROBOT_TYPE>] [profiling=<true|false>]\n\
+USAGE = "Usage: scons <target> [profile=<debug|release|fast>] [robot=TARGET_<ROBOT_TYPE>] [profiling=<true|false>] [tutorial_to_test=<tank_drive|agitator_control>]\n\
     \"<target>\" is one of:\n\
         - \"build\": build all code for the hardware platform.\n\
         - \"run\": build all code for the hardware platform, and deploy it to the board via a connected ST-Link.\n\
@@ -37,7 +38,10 @@ USAGE = "Usage: scons <target> [profile=<debug|release|fast>] [robot=TARGET_<ROB
         - \"run-sim\": build all code for the simulated environment, for the current host platform, and execute the simulator locally.\n\
     \"TARGET_<ROBOT_TYPE>\" is an optional argument that can override whatever robot type has been specified in robot_type.hpp.\n\
         - <ROBOT_TYPE> must be one of the following:\n\
-            - STANDARD"
+            - STANDARD\n\
+    \"tutorial_to_test\" is an optional parameter that allows you to build the unit tests for only the tutorial you are working on.\n\
+        This is useful since not all unit tests will compile until all tutorials are complete, yet you want to run unit tests on all\n\
+        tutorials as you go"
 
 
 def parse_args():
@@ -79,5 +83,12 @@ def parse_args():
 
     # Extract the robot type from either the command line or robot_type.hpp
     args["ROBOT_TYPE"] = extract_robot_type.get_robot_type()
+
+    tutorial_to_test = ARGUMENTS.get("tutorial_to_test")
+    print(tutorial_to_test)
+    if tutorial_to_test is None:
+        args["TUTORIALS"] = VALID_TUTORIALS
+    else:
+        args["TUTORIALS"] = [tutorial_to_test]
 
     return args

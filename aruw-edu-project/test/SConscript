@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with aruw-edu-project.  If not, see <https://www.gnu.org/licenses/>.
 
-from os.path import abspath
+from os.path import split, samefile, join
 
 Import("env")
 Import("args")
@@ -23,7 +23,6 @@ Import("sources")
 
 
 if args["TARGET_ENV"] == "tests":
-    print("etss")
     env_cpy = env.Clone()
 
     # Append on the global robot target build flag
@@ -31,7 +30,20 @@ if args["TARGET_ENV"] == "tests":
 
     rawSrcs = env_cpy.FindSourceFiles(".")
 
-    for source in rawSrcs:
-        sources.append(env_cpy.Object(source))
+    def append_with_prefix(prefix):
+        for source in rawSrcs:
+            try:
+                if samefile(join(prefix, split(source)[1]), source):
+                    sources.append(env_cpy.Object(source))
+            except FileNotFoundError:
+                pass
+
+    if "tank_drive" in args["TUTORIALS"]:
+        print("building tests for tank drive")
+        append_with_prefix("control/chassis")
+        sources.append("control/control_operator_interface_tests.cpp")
+        sources.append("control/standard_tests.cpp")
+    if "agitator_control" in args["TUTORIALS"]:
+        print("building tests for agitator control")
 
 Return('sources')
