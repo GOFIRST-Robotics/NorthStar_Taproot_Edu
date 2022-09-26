@@ -25,10 +25,7 @@
 
 #include "control/algorithms/edu_pid.hpp"
 
-namespace aruwsrc
-{
 class Drivers;
-}
 
 namespace control::agitator
 {
@@ -54,7 +51,7 @@ public:
      * @param[in] agitator The base motor that this agitator subsystem is is going to control.
      */
     VelocityAgitatorSubsystem(
-        aruwsrc::Drivers& drivers,
+        Drivers& drivers,
         const control::algorithms::EduPidConfig& pidConfig,
         tap::motor::DjiMotor& agitator);
 
@@ -75,7 +72,7 @@ public:
      *
      * @param[in] velocity The desired velocity in radians / second.
      */
-    void setSetpoint(float velocity) override;
+    void setSetpoint(float velocity) override { velocitySetpoint = velocity; }
 
     /// @return The agitator velocity in radians / second.
     float getCurrentValue() const override;
@@ -143,6 +140,8 @@ private:
     bool calibrated{false};
 
     float agitatorCalibratedZeroAngle{0};
+
+    uint32_t prevTime{0};
 };
 
 }  // namespace control::agitator

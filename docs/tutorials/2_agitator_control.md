@@ -76,6 +76,15 @@ to command the agitator subsystem to rotate.
 Like in the previous tutorial, you will find comments of the form `// STEP <n>
 (Agitator Control)` to guide you through completing the tutorial.
 
+## Getting Started
+
+It is recommended that you branch off of your git branch you created for the
+tank drive tutorial when working on agitator control. By branching off of the
+branch you already created, when you finish agitator control, you will have
+software for a functional chassis and agitator subsystem all in the same place.
+At the end of all the tutorials, if you continue to follow this pattern, you
+will have all the software for a standard robot.
+
 ## `EduPid`
 
 ### What is a PID controller?
@@ -404,11 +413,25 @@ controller if the agitator is calibrated. Refer to the following pseudocode when
 implementing the `refresh` function:
 
 ```{code-block}
+if offline:
+  calibrated = false
+
 if calibrated:
   run PID controller
   set motor output to PID controller's getOutput function
 else:
   call calibrateHere function
+```
+
+```{note}
+Use the function `tap::arch::clock::getTimeMilliseconds()` to determine the
+current time when computing `dt`.
+```
+
+```{note}
+When running the PID controller, you want to run a velocity PID controller.
+Thus, the error that you pass to the controller is the difference between the
+target velocity and the actual velocity, in angular velocity (rad/second).
 ```
 
 ### STEP 4: `getSetpoint` function
@@ -432,7 +455,7 @@ to `true`.
 
 ### STEP 7: `isOnline` function
 
-This function should return the `DjiMotor`'s `isOnline` function.
+This function should return the `DjiMotor`'s `isMotorOnline` function.
 
 ### STEP 8: `getCurrentValueIntegral` function
 
@@ -449,9 +472,7 @@ Next, you will be finishing the `Robot` object in
 modified in the tank drive tutorial.
 
 Steps 1-5 are quite similar to the tank drive tutorial, so refer to {ref}`these
-sections <tank_drive_robot>` in the other tutorial for these steps. Note that
-for testing purposes, you should name the subsystem you create
-`agitatorSubsystem` and the command `rotateAgitatorCommand`.
+sections <tank_drive_robot>` in the other tutorial for these steps.
 
 ### STEP 6: declare `HoldRepeatCommandMapping` (`rightSwitchUp`)
 

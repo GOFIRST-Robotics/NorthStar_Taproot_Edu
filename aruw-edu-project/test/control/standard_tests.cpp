@@ -17,11 +17,18 @@
  * along with aruw-edu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <bitset>
+
 #include <gtest/gtest.h>
 
 #include "control/standard.hpp"
 
 #include "drivers.hpp"
+
+using tap::control::CommandMapping;
+using tap::control::HoldCommandMapping;
+using tap::control::HoldRepeatCommandMapping;
+using tap::control::Subsystem;
 
 namespace control
 {
@@ -37,11 +44,39 @@ protected:
 
 TEST_F(ARUW_EDU_Standard, Initialization)
 {
+    std::bitset<2> subsystems{};
+
     EXPECT_CALL(drivers.commandScheduler, registerSubsystem)
-        .WillOnce([](tap::control::Subsystem *sub) {
-            EXPECT_NE(nullptr, dynamic_cast<chassis::ChassisSubsystem *>(sub));
+        .Times(2)
+        .WillRepeatedly([&](Subsystem *sub) {
+            if (dynamic_cast<chassis::ChassisSubsystem *>(sub) != nullptr)
+            {
+                subsystems.set(0);
+            }
+            else if (dynamic_cast<agitator::VelocityAgitatorSubsystem *>(sub) != nullptr)
+            {
+                subsystems.set(1);
+            }
+        });
+
+    std::bitset<2> mappings{};
+
+    EXPECT_CALL(drivers.commandMapper, addMap)
+        .Times(2)
+        .WillRepeatedly([&](CommandMapping *mapping) {
+            if (dynamic_cast<HoldCommandMapping *>(mapping) != nullptr)
+            {
+                mappings.set(0);
+            }
+            else if (dynamic_cast<HoldRepeatCommandMapping *>(mapping) != nullptr)
+            {
+                mappings.set(1);
+            }
         });
 
     robot.initSubsystemCommands();
+
+    EXPECT_EQ(2, subsystems.count());
+    EXPECT_EQ(2, mappings.count());
 }
 }  // namespace control
