@@ -197,7 +197,7 @@ understanding of how they work.
 To test your understanding, answer the following questions:
 
   - Label `foo`, `bar`, and `baz` as pointers, references, or variables.
-    ```{code-block}cpp
+    ```cpp
     void function()
     {
       int foo{42};
@@ -214,7 +214,7 @@ To test your understanding, answer the following questions:
 
   - In the function `f1` defined below, how would you call `f2`, `f3`, and `f4`
     respectively, passing the variable `foo` to these three functions?
-    ```{code-block}cpp
+    ```cpp
     void f2(int var)
     {
       // Print var and address of var
@@ -256,7 +256,7 @@ To test your understanding, answer the following questions:
     </details>
 
     Assume `f1()` has now been changed to the following:
-    ```{code-block}cpp
+    ```cpp
     void f1()
     {
       int *foo = new int(42);
@@ -324,7 +324,7 @@ declared as a public member function of the class `Example`.
 This is because `greatFunction` is declared in the example class within the
 section with `public` at the top.
 
-```{code-block}cpp
+```cpp
 // example.hpp
 
 class Example {
