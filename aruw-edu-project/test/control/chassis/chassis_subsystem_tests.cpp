@@ -178,10 +178,10 @@ static constexpr ChassisSubsystemParams NONZERO_TARGET_CORRECT_WHEELSPEED{
     .left = -1,
     .right = 1,
 
-    .lfActualRpm = -2387.434554974,
-    .lbActualRpm = -2387.434554974,
-    .rbActualRpm = 2387.434554974,
-    .rfActualRpm = 2387.434554974,
+    .lfActualRpm = -4774.65,
+    .lbActualRpm = -4774.65,
+    .rbActualRpm = 4774.65,
+    .rfActualRpm = 4774.65,
 };
 static constexpr ChassisSubsystemParams DESIRED_OVER_MAX{
     .left = 10000,

@@ -116,7 +116,15 @@ TEST(EduPid, integral_limited_by_max_error_integral)
 
 TEST(EduPid, zero_i_accumulative_zero_integral_output)
 {
-    EduPid pid(PID_CONFIG_I_GAIN_ONLY);
+    static constexpr EduPidConfig PID_OCNFIG_ZERO_I_SUM{
+        .kp = 0,
+        .ki = KI,
+        .kd = 0,
+        .maxICumulative = 0,
+        .maxOutput = MAX_OUT,
+    };
+
+    EduPid pid(PID_OCNFIG_ZERO_I_SUM);
 
     EXPECT_EQ(0, pid.runControllerDerivateError(100, 100));
 }

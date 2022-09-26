@@ -525,9 +525,7 @@ help guide you through finishing the `Robot` object.
 ### STEP 1: Declare `ChassisSubsystem`
 
 Note that the subsystem is scoped inside the namespace `control`. Thus
-`control::` will have to be appended on to the object name. For unit test
-purposes, this object should be named `chassisSubsystem`.
-
+`control::` will have to be appended on to the object name.
 ```{tip}
 Unlike in Java, declaring a variable of class or struct type
 automatically instantiates that type -- there are no "null references" in C++,
@@ -538,8 +536,7 @@ pointers. If you don't know how to instantiate objects in C++, look
 
 ### STEP 2: Declare `ChassisTankDriveCommand`
 
-This should be very similar to step 1. For unit test purposes, this object
-should be named `chassisTankDriveCommand`.
+This should be very similar to step 1.
 
 ### STEP 3: Construct Subsystem and Command
 
@@ -583,7 +580,13 @@ have been provided, so you do not have to write your own (see
 `./aruw-edu-project/test/control`).
 
 To compile and run tests for the chassis tank drive, run `scons run-tests
-tutorial_to_test=tanK_drive`.
+tutorial_to_test=tank_drive`.
+
+```{attention}
+One test, `ARUW_EDU_Standard.Initialization` will not pass until you have
+completed other tutorials. Otherwise, all other tests should pass when running
+`scons run-tests tutorial_to_test=tank_drive`
+```
 
 (tank_drive_run_code_on_a_robot)=
 ## Run Code on a Robot

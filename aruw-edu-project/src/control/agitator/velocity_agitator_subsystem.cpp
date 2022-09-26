@@ -19,8 +19,13 @@
 
 #include "velocity_agitator_subsystem.hpp"
 
+#include "tap/architecture/clock.hpp"
+
 #include "modm/math/geometry/angle.hpp"
 
+#include "drivers.hpp"
+
+using tap::arch::clock::getTimeMilliseconds;
 using tap::motor::DjiMotor;
 
 namespace control::agitator

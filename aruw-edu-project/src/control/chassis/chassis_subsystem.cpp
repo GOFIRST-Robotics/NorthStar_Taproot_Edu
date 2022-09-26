@@ -19,8 +19,6 @@
 
 #include "chassis_subsystem.hpp"
 
-#include <iostream>
-
 #include "tap/algorithms/math_user_utils.hpp"
 
 #include "drivers.hpp"

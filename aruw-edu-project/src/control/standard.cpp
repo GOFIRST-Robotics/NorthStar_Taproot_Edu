@@ -27,6 +27,8 @@
 #include "drivers.hpp"
 
 using tap::can::CanBus;
+using tap::communication::serial::Remote;
+using tap::control::RemoteMapState;
 using tap::motor::MotorId;
 
 namespace control
