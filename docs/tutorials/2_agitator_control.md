@@ -412,7 +412,7 @@ created in the previous section. Furthermore, you should only run the pid
 controller if the agitator is calibrated. Refer to the following pseudocode when
 implementing the `refresh` function:
 
-```{code-block}
+```
 if offline:
   calibrated = false
 
