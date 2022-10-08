@@ -31,7 +31,7 @@ namespace control::chassis
 
 // STEP 2 (Tank Drive): initialize function
 
-// STEP 4 (Tank Drive): setVelocityTankDrive function
+// STEP 3 (Tank Drive): setVelocityTankDrive function
 
-// STEP 5 (Tank Drive): refresh function
+// STEP 4 (Tank Drive): refresh function
 }  // namespace control::chassis

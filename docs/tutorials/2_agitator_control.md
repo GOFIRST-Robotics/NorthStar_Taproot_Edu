@@ -27,7 +27,7 @@ motor controller used is typically different (for the standard robot).
   motor is connected to the motor controller identical to what is described in
   the tank drive tutorial. The motor is physically connected to an "agitator"
   (also described as an "indexer" or "stirrer").
-- Remote control receiver and reomte. The receiver will be used in a simmilar
+- Remote control receiver and remote. The receiver will be used in a similar
   fashion as the tank drive tutorial. During this tutorial, you will be
   connecting the remote to a computer, which you will used to receive mouse
   button click information.
