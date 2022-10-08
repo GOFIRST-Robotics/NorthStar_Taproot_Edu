@@ -403,7 +403,26 @@ construct the `velocityPid` object, passing in the PID config struct.
 
 Here, you should initialize the agitator motor.
 
-### STEP 3: `refresh` function
+### STEP 3: `getSetpoint` function
+
+This function should return the `velocitySetpoint` (a local variable of
+`VelocityAgitatorSubsystem`).
+
+### STEP 4: `getCurrentValue` function
+
+This function should reutrn the agitator's actual velocity, as reported by the
+`DjiMotor` object. Use the `DjiMotor`'s `getShaftRPM` function. Note the motor
+you are using has a gear ratio of `AGITATOR_GEAR_RATIO_M2006`. Convert the shaft
+RPM to agitator rotational speed in radians/second.
+
+### STEP 5: `calibrateHere` function
+
+This function should return `false` if the motor is offline and `true` if it is
+online. Furthermore, if the motor is online, the `agitatorCalibratedZeroAngle`
+should be set to `getUncalibratedAgitatorAngle`. Also `calibrated` should be set
+to `true`.
+
+### STEP 6: `refresh` function
 
 This function should perform a couple of steps. Remember from the tank drive
 tutorial, the `refresh` function is called at some fixed frequency (in
@@ -433,25 +452,6 @@ When running the PID controller, you want to run a velocity PID controller.
 Thus, the error that you pass to the controller is the difference between the
 target velocity and the actual velocity, in angular velocity (rad/second).
 ```
-
-### STEP 4: `getSetpoint` function
-
-This function should return the `velocitySetpoint` (a local variable of
-`VelocityAgitatorSubsystem`).
-
-### STEP 5: `getCurrentValue` function
-
-This function should reutrn the agitator's actual velocity, as reported by the
-`DjiMotor` object. Use the `DjiMotor`'s `getShaftRPM` function. Note the motor
-you are using has a gear ratio of `AGITATOR_GEAR_RATIO_M2006`. Convert the shaft
-RPM to agitator rotational speed in radians/second.
-
-### STEP 6: `calibrateHere` function
-
-This function should return `false` if the motor is offline and `true` if it is
-online. Furthermore, if the motor is online, the `agitatorCalibratedZeroAngle`
-should be set to `getUncalibratedAgitatorAngle`. Also `calibrated` should be set
-to `true`.
 
 ### STEP 7: `isOnline` function
 
