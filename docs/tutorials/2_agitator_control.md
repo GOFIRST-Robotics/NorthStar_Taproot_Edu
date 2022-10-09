@@ -410,7 +410,7 @@ This function should return the `velocitySetpoint` (a local variable of
 
 ### STEP 4: `getCurrentValue` function
 
-This function should reutrn the agitator's actual velocity, as reported by the
+This function should return the agitator's actual velocity, as reported by the
 `DjiMotor` object. Use the `DjiMotor`'s `getShaftRPM` function. Note the motor
 you are using has a gear ratio of `AGITATOR_GEAR_RATIO_M2006`. Convert the shaft
 RPM to agitator rotational speed in radians/second.
