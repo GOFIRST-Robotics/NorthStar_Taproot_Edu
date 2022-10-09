@@ -494,7 +494,7 @@ Please refer to the
 for how a `HoldCommandMapping` works. In this case, you will associate the
 `MoveIntegralCommand` you created in the previous steps with this command
 mapping. In doing so, when this command mapping is registered, every time the
-left moues is pressed, the agitator will rotate once, causing a projectile to be
+left mouse is pressed, the agitator will rotate once, causing a projectile to be
 launched.
 
 ### STEP 8: construct `HoldRepeatCommandMapping` and `HoldCommandMapping`
