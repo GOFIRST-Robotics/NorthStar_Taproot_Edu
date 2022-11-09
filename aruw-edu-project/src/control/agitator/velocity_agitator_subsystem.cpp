@@ -34,13 +34,13 @@ namespace control::agitator
 
 // STEP 2 (Agitator Control): initialize function
 
-// STEP 3 (Agitator Control): refresh function
+// STEP 6 (Agitator Control): refresh function
 
-// STEP 4 (Agitator Control): getSetpoint function
+// STEP 3 (Agitator Control): getSetpoint function
 
-// STEP 5 (Agitator Control): getCurrentValue function
+// STEP 4 (Agitator Control): getCurrentValue function
 
-// STEP 6 (Agitator Control): calibrateHere function
+// STEP 5 (Agitator Control): calibrateHere function
 
 // STEP 7 (Agitator Control): isOnline function
 

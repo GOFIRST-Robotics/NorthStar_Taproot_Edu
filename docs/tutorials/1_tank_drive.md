@@ -361,15 +361,15 @@ formula for defining a function for a class outside of the class involves adding
 
 As you define the function, you have to actually write logic in the functions.
 
-Refer to the remote's [`generated
-documentation`](https://aruw.gitlab.io/controls/taproot/api/classtap_1_1communication_1_1serial_1_1_remote.html)
+Refer to [the remote's generated
+documentation](https://aruw.gitlab.io/controls/taproot/api/classtap_1_1communication_1_1serial_1_1_remote.html)
 to learn how to interact with the remote. The functions you define should call
-the remote's `getSwitch` functions. The left left vertical switch should be used
+the remote's `getChannel` function. The left vertical switch should be used
 to get user input for the left tank drive function and the right vertical switch
 for the right tank drive function.
 
 ```{note}
-Be sure to limit the values returned by the `getSwitch` function between
+Be sure to limit the values returned by the `getChannel` function between
 `[-1, 1]`. Use the `limitVal` function defined in `tap/algorithms/math_user_utils.hpp`.
 ```
 
@@ -457,7 +457,7 @@ side speed is 0 m/s, the desired wheelspeed of the two left motors should be
 positive and converted from linear speed to rotational speed, and the two right
 wheels should have a desired wheelspeed of 0. Note the desired wheel speed
 should be limited by `setVelocityTankDrive` to `[-MAX_WHEELSPEED_RPM,
-MAX_WHEELSPEED_RPM]`. Look up how to convert m/s to RPM as required. Note that
+MAX_WHEELSPEED_RPM]`. Look through the code to find how to convert m/s to RPM as required. Note that
 the motors are geared approximately 19:1, so any conversion should should
 include a multiplication by by 19. Also, the wheel diameter is 0.076 m.
 
@@ -478,7 +478,7 @@ The `refresh` function is called repeatedly at some specified frequency. In
 
 - Call each `pidControllers`'s `update` function. This function expects an
   input. The input should be the difference between the desired RPM and the
-  motor's actual RPM. 
+  motor's actual RPM. This will automatically set the motor's speed so that the chassis will move at the correct velocity.
 - Call each motor's `setDesiredOutput` function, passing to this function the
   `pidControllers`'s `getValue` function.
 
@@ -525,7 +525,7 @@ help guide you through finishing the `Robot` object.
 ### STEP 1: Declare `ChassisSubsystem`
 
 Note that the subsystem is scoped inside the namespace `control`. Thus
-`control::` will have to be appended on to the object name.
+`chassis::` will have to be appended on to the object name.
 ```{tip}
 Unlike in Java, declaring a variable of class or struct type
 automatically instantiates that type -- there are no "null references" in C++,
