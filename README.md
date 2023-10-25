@@ -48,7 +48,7 @@ _Make sure you have followed the above setup instructions._
 Run the following to clone this repository:
 
 ```
-git clone --recursive https://gitlab.com/my-team/my-amazing-project.git
+git clone --recursive https://gitlab.com/aruw/controls/aruw-edu.git
 ```
 
 If you use the Docker container, or have already cloned the repository yourself, you should instead
